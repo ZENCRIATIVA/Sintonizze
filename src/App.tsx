@@ -408,10 +408,10 @@ export default function App() {
 
     setIsLoading(true);
     try {
-      // 1. Enviar por e-mail via FormSubmit (AJAX)
-      const emailData = {
+      // 1. Preparar dados para o e-mail
+      const emailData: Record<string, any> = {
         _subject: `NOVO FORMULÁRIO: ${formData.nome} - Sintonizze`,
-        _captcha: false,
+        _captcha: "false", // Usando string para maior compatibilidade
         _template: 'table',
         _honey: "", 
         "Nome Completo": formData.nome,
@@ -423,16 +423,16 @@ export default function App() {
         "História": formData.historia,
         "Áreas": formData.intencao_areas.join(', '),
         "Estilo Musical": formData.estilo_musical,
+        "Momento ideal": formData.momento_ouvir,
         "Observações": formData.observacoes
       };
 
       if (formData.modulo === 'B') {
-        Object.assign(emailData, {
-          "Nome do Parceiro": formData.nome_parceiro,
-          "Nascimento do Parceiro": formatDateBR(formData.nascimento_parceiro)
-        });
+        emailData["Nome do Parceiro"] = formData.nome_parceiro;
+        emailData["Nascimento do Parceiro"] = formatDateBR(formData.nascimento_parceiro);
       }
 
+      // 2. Enviar por e-mail via FormSubmit (AJAX)
       const response = await fetch("https://formsubmit.co/ajax/sintonizzey@gmail.com", {
         method: "POST",
         headers: { 
@@ -442,13 +442,20 @@ export default function App() {
         body: JSON.stringify(emailData)
       });
 
-      const result = await response.json();
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        result = await response.json();
+      } else {
+        result = { success: response.ok, message: await response.text() };
+      }
 
-      // 2. Gerar PDF automaticamente (silenciosamente)
+      // 3. Gerar PDF automaticamente (silenciosamente)
       await gerarPDF(true);
 
       if (!response.ok || result.success === false || result.success === "false") {
-        throw new Error(result.message || 'Erro no servidor de e-mail');
+        const errorMsg = result.message || 'Erro desconhecido no servidor';
+        throw new Error(errorMsg);
       }
 
       setIsSubmitted(true);
@@ -460,16 +467,17 @@ export default function App() {
       // Fallback: Geramos o PDF mesmo com erro no e-mail
       await gerarPDF(true);
 
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      const errorMessage = error instanceof Error ? error.message : 'Erro de conexão';
       
       setModal({ 
         active: true, 
-        title: 'Atenção: Verifique o E-mail', 
-        text: `O envio automático falhou (${errorMessage}). IMPORTANTE: Acesse sintonizzey@gmail.com e procure por um e-mail do FormSubmit para "Ativar" o formulário. Sem essa ativação, os dados não chegam. O PDF foi baixado com sucesso.`, 
+        title: 'Atenção: Envio Manual Necessário', 
+        text: `O envio automático falhou (${errorMessage}). O PDF foi baixado com sucesso! Por favor, envie o PDF manualmente para sintonizzey@gmail.com. IMPORTANTE: Verifique se você ativou o FormSubmit no seu e-mail.`, 
         type: 'info' 
       });
       
-      setIsSubmitted(true); // Mostramos a tela de sucesso para o cliente não se frustrar
+      // Mesmo com erro, mostramos a tela de sucesso para o cliente não perder o progresso
+      setIsSubmitted(true); 
     } finally {
       setIsLoading(false);
     }
