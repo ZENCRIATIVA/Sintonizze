@@ -408,7 +408,6 @@ export default function App() {
 
     setIsLoading(true);
     try {
-      // 1. Preparar dados para o e-mail
       const emailData: Record<string, any> = {
         _subject: `NOVO FORMULÁRIO: ${formData.nome} - Sintonizze`,
         _captcha: "false",
@@ -432,51 +431,71 @@ export default function App() {
         emailData["Nascimento do Parceiro"] = formatDateBR(formData.nascimento_parceiro);
       }
 
-      // 2. Usar FormData para evitar bloqueios de CORS/AdBlock
-      const fb = new FormData();
-      Object.entries(emailData).forEach(([key, value]) => {
-        fb.append(key, value);
-      });
+      // 1. Gerar PDF primeiro para garantir que o cliente tenha o arquivo
+      await gerarPDF(true);
 
-      const response = await fetch("https://formsubmit.co/ajax/sintonizzey@gmail.com", {
-        method: "POST",
-        body: fb,
-        // Não definimos Content-Type manualmente para FormData, o navegador faz isso com o boundary correto
-      });
-
-      let result;
+      // 2. Tentar envio moderno (AJAX)
       try {
-        result = await response.json();
-      } catch (e) {
-        result = { success: response.ok };
+        const fb = new FormData();
+        Object.entries(emailData).forEach(([key, value]) => fb.append(key, value));
+
+        const response = await fetch("https://formsubmit.co/ajax/sintonizzey@gmail.com", {
+          method: "POST",
+          body: fb,
+        });
+
+        if (!response.ok) throw new Error('Servidor recusou o envio');
+        
+        setIsSubmitted(true);
+        localStorage.removeItem('sintonizze_formulario');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (ajaxError) {
+        console.warn('AJAX falhou, tentando método de contingência...', ajaxError);
+        
+        // 3. Contingência: Se o AJAX falhar (AdBlock), usamos o método de formulário oculto
+        // Este método é mais difícil de ser bloqueado por extensões
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://formsubmit.co/sintonizzey@gmail.com';
+        form.style.display = 'none';
+
+        Object.entries(emailData).forEach(([key, value]) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = String(value);
+          form.appendChild(input);
+        });
+
+        // Adicionamos um campo para redirecionar de volta após o envio
+        const nextInput = document.createElement('input');
+        nextInput.type = 'hidden';
+        nextInput.name = '_next';
+        nextInput.value = window.location.href;
+        form.appendChild(nextInput);
+
+        document.body.appendChild(form);
+        
+        // Avisamos o usuário que o AdBlock causou um redirecionamento
+        setModal({
+          active: true,
+          title: 'Sincronizando Frequência...',
+          text: 'Seu bloqueador de anúncios impediu o envio automático. Vamos tentar um método alternativo agora. O PDF já foi baixado!',
+          type: 'info'
+        });
+
+        setTimeout(() => {
+          form.submit();
+        }, 2000);
       }
-
-      // 3. Gerar PDF automaticamente (silenciosamente)
-      await gerarPDF(true);
-
-      if (!response.ok || result.success === false || result.success === "false") {
-        throw new Error('O servidor de e-mail recusou o envio. Verifique a ativação.');
-      }
-
-      setIsSubmitted(true);
-      localStorage.removeItem('sintonizze_formulario');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
-      console.error('Erro no envio:', error);
-      
-      // Fallback: Geramos o PDF mesmo com erro no e-mail
-      await gerarPDF(true);
-
-      const isNetworkError = error instanceof Error && error.message.includes('fetch');
-      const errorDetail = isNetworkError ? "Bloqueio de Rede/AdBlock" : (error instanceof Error ? error.message : 'Erro de conexão');
-      
+      console.error('Erro crítico no envio:', error);
       setModal({ 
         active: true, 
-        title: 'Atenção: Envio Manual Necessário', 
-        text: `Não conseguimos enviar os dados automaticamente (${errorDetail}). O PDF com todas as suas respostas foi baixado com sucesso! Por favor, envie este arquivo para sintonizzey@gmail.com para concluir seu pedido.`, 
+        title: 'Atenção: Envio Manual', 
+        text: `Não conseguimos processar o envio automático. O PDF com suas respostas foi baixado! Por favor, envie-o para sintonizzey@gmail.com.`, 
         type: 'info' 
       });
-      
       setIsSubmitted(true); 
     } finally {
       setIsLoading(false);
