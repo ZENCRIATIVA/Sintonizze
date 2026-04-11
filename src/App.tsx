@@ -580,15 +580,15 @@ export default function App() {
       <header className="bg-ink py-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, #C9A84C 40px, #C9A84C 41px)' }} />
         <div className="relative z-10">
-          <p className="text-gold uppercase tracking-[0.2em] sm:tracking-[0.5em] text-sm sm:text-base md:text-lg mb-4 opacity-90 font-medium px-2">Engenharia Sônica Quântica</p>
+          <p className="text-gold uppercase tracking-[0.2em] sm:tracking-[0.5em] text-sm sm:text-base md:text-lg mb-4 opacity-90 font-medium px-2 translate-no" translate="no">Engenharia Sônica Quântica</p>
           <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4">
             <div className="h-[1px] sm:h-[2px] w-12 sm:w-20 bg-gold/40" />
             <Sparkles className="text-gold" size={24} />
             <div className="h-[1px] sm:h-[2px] w-12 sm:w-20 bg-gold/40" />
           </div>
-          <h1 className="font-serif text-4xl sm:text-7xl md:text-9xl tracking-[0.05em] sm:tracking-[0.2em] text-cream mb-4 leading-none">SINTONIZZE<span className="text-gold">·</span></h1>
+          <h1 className="font-serif text-4xl sm:text-7xl md:text-9xl tracking-[0.05em] sm:tracking-[0.2em] text-cream mb-4 leading-none translate-no" translate="no">SINTONIZZE<span className="text-gold">·</span></h1>
           <div className="gold-rule" />
-          <p className="text-gold/70 uppercase tracking-[0.15em] sm:tracking-[0.4em] text-sm sm:text-lg md:text-xl mt-6 font-light px-4">Ondas Transcendentais</p>
+          <p className="text-gold/70 uppercase tracking-[0.15em] sm:tracking-[0.4em] text-sm sm:text-lg md:text-xl mt-6 font-light px-4 translate-no" translate="no">Ondas Transcendentais</p>
           <p className="font-serif italic text-lg sm:text-2xl md:text-4xl text-cream/75 tracking-wide mt-5 leading-relaxed px-6">Formulário de Criação Vibracional Personalizada</p>
           <div className="inline-block bg-gradient-to-br from-gold to-gold-light text-ink px-10 py-4 rounded-full text-lg tracking-[0.3em] uppercase font-bold mt-10 shadow-[0_8px_30px_rgba(201,168,76,0.5)]">
             ✦ PDF Editável ✦
