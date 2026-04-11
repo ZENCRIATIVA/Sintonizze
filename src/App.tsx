@@ -72,45 +72,42 @@ export default function App() {
     text: '',
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  
+  // Cálculo de progresso simplificado para garantir atualização em tempo real
+  const fieldsToTrack = [
+    'intencao', 'nome', 'nascimento', 'email', 'telefone', 
+    'historia', 'intencao_detalhes', 'estilo_musical', 
+    'momento_ouvir', 'observacoes'
+  ];
+  
+  let filledCount = 0;
+  let totalCount = fieldsToTrack.length + 1; // +1 para o módulo
 
-  // Calculate progress using useMemo for better sync in production
-  const progress = React.useMemo(() => {
-    const fieldsToTrack = [
-      'intencao', 'nome', 'nascimento', 'email', 'telefone', 
-      'historia', 'intencao_detalhes', 'estilo_musical', 
-      'momento_ouvir', 'observacoes'
-    ];
-    
-    let filledCount = 0;
-    let totalCount = fieldsToTrack.length + 1; // +1 for modulo
+  // Lógica do módulo
+  if (formData.modulo === 'OUTRO') {
+    if (formData.modulo_outro_desc?.trim()) filledCount++;
+  } else if (formData.modulo) {
+    filledCount++;
+  }
 
-    // Modulo logic
-    if (formData.modulo === 'OUTRO') {
-      if (formData.modulo_outro_desc?.trim()) filledCount++;
-    } else if (formData.modulo) {
-      filledCount++;
-    }
+  // Campos padrão
+  fieldsToTrack.forEach(field => {
+    const val = formData[field as keyof FormData];
+    if (typeof val === 'string' && val.trim()) filledCount++;
+  });
 
-    // Standard fields
-    fieldsToTrack.forEach(field => {
-      const val = formData[field as keyof FormData];
-      if (typeof val === 'string' && val.trim()) filledCount++;
-    });
+  // Áreas (contadas como um campo)
+  totalCount += 1;
+  if (formData.intencao_areas && formData.intencao_areas.length > 0) filledCount++;
 
-    // Areas (treated as one field)
-    totalCount += 1;
-    if (formData.intencao_areas && formData.intencao_areas.length > 0) filledCount++;
+  // Extras do Módulo B
+  if (formData.modulo === 'B') {
+    totalCount += 2;
+    if (formData.nome_parceiro?.trim()) filledCount++;
+    if (formData.nascimento_parceiro) filledCount++;
+  }
 
-    // Module B extras
-    if (formData.modulo === 'B') {
-      totalCount += 2;
-      if (formData.nome_parceiro?.trim()) filledCount++;
-      if (formData.nascimento_parceiro) filledCount++;
-    }
-
-    if (totalCount === 0) return 0;
-    return Math.min(100, Math.round((filledCount / totalCount) * 100));
-  }, [formData]);
+  const progress = totalCount === 0 ? 0 : Math.min(100, Math.round((filledCount / totalCount) * 100));
 
   // Helper to check if a field is filled
   const isFieldFilled = (name: keyof FormData) => {
