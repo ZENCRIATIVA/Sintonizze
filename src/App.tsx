@@ -72,42 +72,46 @@ export default function App() {
     text: '',
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  
-  // Cálculo de progresso simplificado para garantir atualização em tempo real
-  const fieldsToTrack = [
-    'intencao', 'nome', 'nascimento', 'email', 'telefone', 
-    'historia', 'intencao_detalhes', 'estilo_musical', 
-    'momento_ouvir', 'observacoes'
-  ];
-  
-  let filledCount = 0;
-  let totalCount = fieldsToTrack.length + 1; // +1 para o módulo
+  const [progress, setProgress] = useState(0);
 
-  // Lógica do módulo
-  if (formData.modulo === 'OUTRO') {
-    if (formData.modulo_outro_desc?.trim()) filledCount++;
-  } else if (formData.modulo) {
-    filledCount++;
-  }
+  // Cálculo de progresso robusto com useEffect para garantir atualização em produção
+  useEffect(() => {
+    const fieldsToTrack = [
+      'intencao', 'nome', 'nascimento', 'email', 'telefone', 
+      'historia', 'intencao_detalhes', 'estilo_musical', 
+      'momento_ouvir', 'observacoes'
+    ];
+    
+    let filledCount = 0;
+    let totalCount = fieldsToTrack.length + 1; // +1 para o módulo
 
-  // Campos padrão
-  fieldsToTrack.forEach(field => {
-    const val = formData[field as keyof FormData];
-    if (typeof val === 'string' && val.trim()) filledCount++;
-  });
+    // Lógica do módulo
+    if (formData.modulo === 'OUTRO') {
+      if (formData.modulo_outro_desc && formData.modulo_outro_desc.trim()) filledCount++;
+    } else if (formData.modulo) {
+      filledCount++;
+    }
 
-  // Áreas (contadas como um campo)
-  totalCount += 1;
-  if (formData.intencao_areas && formData.intencao_areas.length > 0) filledCount++;
+    // Campos padrão
+    fieldsToTrack.forEach(field => {
+      const val = formData[field as keyof FormData];
+      if (typeof val === 'string' && val.trim()) filledCount++;
+    });
 
-  // Extras do Módulo B
-  if (formData.modulo === 'B') {
-    totalCount += 2;
-    if (formData.nome_parceiro?.trim()) filledCount++;
-    if (formData.nascimento_parceiro) filledCount++;
-  }
+    // Áreas (contadas como um campo)
+    totalCount += 1;
+    if (formData.intencao_areas && formData.intencao_areas.length > 0) filledCount++;
 
-  const progress = totalCount === 0 ? 0 : Math.min(100, Math.round((filledCount / totalCount) * 100));
+    // Extras do Módulo B
+    if (formData.modulo === 'B') {
+      totalCount += 2;
+      if (formData.nome_parceiro && formData.nome_parceiro.trim()) filledCount++;
+      if (formData.nascimento_parceiro) filledCount++;
+    }
+
+    const newProgress = totalCount === 0 ? 0 : Math.min(100, Math.round((filledCount / totalCount) * 100));
+    setProgress(newProgress);
+  }, [formData]);
 
   // Helper to check if a field is filled
   const isFieldFilled = (name: keyof FormData) => {
@@ -576,7 +580,7 @@ export default function App() {
               className="h-full bg-gradient-to-r from-gold via-gold-light to-gold"
             />
           </div>
-          <p className="text-center text-lg tracking-[0.3em] uppercase text-gold mt-4 font-bold">
+          <p key={`progress-text-${progress}`} className="text-center text-lg tracking-[0.3em] uppercase text-gold mt-4 font-bold">
             {progress}% da sua frequência sintonizada
           </p>
         </div>
