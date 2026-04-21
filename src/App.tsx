@@ -19,7 +19,23 @@ import {
   Star, 
   Moon, 
   Sparkles,
-  DollarSign
+  DollarSign,
+  Zap,
+  Baby,
+  TrendingUp,
+  RefreshCw,
+  Shield,
+  Wind,
+  Sun,
+  Brain,
+  Battery,
+  Activity,
+  Lock,
+  Target,
+  User,
+  Smile,
+  Droplets,
+  PenTool
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -60,6 +76,30 @@ const initialFormData: FormData = {
   momento_ouvir: '',
   observacoes: '',
 };
+
+const MODULOS_DATA = [
+  { id: '1', icon: <Zap size={32} />, name: 'Código da Alma (Nascimento)', desc: 'Sua frequência original e missão de vida' },
+  { id: '2', icon: <Heart size={32} />, name: 'Conexão de Almas (Relacionamento)', desc: 'Fortalecimento de vínculo, amor e conexão profunda' },
+  { id: '3', icon: <Baby size={32} />, name: 'Conexão no Útero (Gestação & Bebê)', desc: 'Frequências para gestantes e desenvolvimento do bebê' },
+  { id: '4', icon: <TrendingUp size={32} />, name: 'Prosperidade & Negócios', desc: 'Ativação vibracional para dinheiro e crescimento profissional' },
+  { id: '5', icon: <RefreshCw size={32} />, name: 'Evolução Pessoal (Ciclos de Vida)', desc: 'Alinhamento com fases, mudanças e crescimento interno' },
+  { id: '6', icon: <Shield size={32} />, name: 'Cura Pós-Trauma', desc: 'Recuperação emocional profunda e recomeço' },
+  { id: '7', icon: <Wind size={32} />, name: 'Anti-Ansiedade', desc: 'Acalmar a mente e regular o sistema nervoso' },
+  { id: '8', icon: <Moon size={32} />, name: 'Sono Profundo', desc: 'Dormir melhor e restaurar energia' },
+  { id: '9', icon: <Sun size={32} />, name: 'Tristeza Profunda & Vazio', desc: 'Reconectar com a vida e recuperar o sentido' },
+  { id: '10', icon: <Brain size={32} />, name: 'Foco & Clareza Mental', desc: 'Aumentar concentração e produtividade' },
+  { id: '11', icon: <Battery size={32} />, name: 'Recuperação do Esgotamento (Burnout)', desc: 'Restaurar energia física e mental' },
+  { id: '12', icon: <Activity size={32} />, name: 'Alinhamento Energético (Chakras)', desc: 'Equilíbrio dos centros de energia' },
+  { id: '13', icon: <Lock size={32} />, name: 'Proteção Energética', desc: 'Blindagem contra ambientes e pessoas negativas' },
+  { id: '14', icon: <Target size={32} />, name: 'Manifestação & Realização', desc: 'Transformar intenção em realidade' },
+  { id: '15', icon: <DollarSign size={32} />, name: 'Abundância Financeira', desc: 'Reprogramação para dinheiro e prosperidade' },
+  { id: '16', icon: <Activity size={32} />, name: 'Cura Física & Bem-Estar', desc: 'Redução de dor, tensão e desconforto corporal' },
+  { id: '17', icon: <User size={32} />, name: 'Relação com o Corpo', desc: 'Autoimagem, compulsões e reconexão corporal' },
+  { id: '18', icon: <Sparkles size={32} />, name: 'Meditação Avançada (Quântica)', desc: 'Expansão de consciência e prática profunda' },
+  { id: '19', icon: <Smile size={32} />, name: 'Amor Próprio', desc: 'Fortalecer autoestima e valor pessoal' },
+  { id: '20', icon: <Droplets size={32} />, name: 'Limpeza Energética (Detox)', desc: 'Remover cargas emocionais e energias externas' },
+  { id: '21', icon: <PenTool size={32} />, name: 'Personalizado (Outro)', desc: 'Criado sob medida para sua necessidade específica' },
+];
 
 export default function App() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -287,16 +327,30 @@ export default function App() {
 
       // Content
       const modulos: Record<string, string> = {
-        'A': 'Prosperidade',
-        'B': 'Amor',
-        'C': 'Carreira',
-        'D': 'Ansiedade',
-        'E': 'Propósito',
-        'F': 'Sono',
-        'OUTRO': 'Personalizado'
+        '1': 'Código da Alma (Nascimento)',
+        '2': 'Conexão de Almas (Relacionamento)',
+        '3': 'Conexão no Útero (Gestação & Bebê)',
+        '4': 'Prosperidade & Negócios',
+        '5': 'Evolução Pessoal (Ciclos de Vida)',
+        '6': 'Cura Pós-Trauma',
+        '7': 'Anti-Ansiedade',
+        '8': 'Sono Profundo',
+        '9': 'Tristeza Profunda & Vazio',
+        '10': 'Foco & Clareza Mental',
+        '11': 'Recuperação do Esgotamento (Burnout)',
+        '12': 'Alinhamento Energético (Chakras)',
+        '13': 'Proteção Energética',
+        '14': 'Manifestação & Realização',
+        '15': 'Abundância Financeira',
+        '16': 'Cura Física & Bem-Estar',
+        '17': 'Relação com o Corpo',
+        '18': 'Meditação Avançada (Quântica)',
+        '19': 'Amor Próprio',
+        '20': 'Limpeza Energética (Detox)',
+        '21': 'Personalizado (Outro)'
       };
       let moduloTexto = modulos[formData.modulo] || formData.modulo;
-      if (formData.modulo === 'OUTRO') moduloTexto += ': ' + formData.modulo_outro_desc;
+      if (formData.modulo === '21') moduloTexto += ': ' + formData.modulo_outro_desc;
       
       addField('MÓDULO SOLICITADO', moduloTexto);
       addField('TÍTULO E INTENÇÃO CENTRAL', formData.intencao);
@@ -426,7 +480,7 @@ export default function App() {
         "Observações": formData.observacoes
       };
 
-      if (formData.modulo === 'B') {
+      if (formData.modulo === '2') {
         emailData["Nome do Parceiro"] = formData.nome_parceiro;
         emailData["Nascimento do Parceiro"] = formatDateBR(formData.nascimento_parceiro);
       }
@@ -680,42 +734,36 @@ export default function App() {
                 <div className="section-num">1</div>
                 <div>
                   <p className="text-gold uppercase tracking-[0.5em] text-sm md:text-base mb-2 font-semibold">Campo 01</p>
-                  <h2 className="font-serif text-3xl md:text-5xl text-ink leading-tight">Módulo Solicitado</h2>
+                  <h2 className="font-serif text-3xl md:text-5xl text-ink leading-tight">Módulo da Composição</h2>
                 </div>
                 <div className="flex-1 h-[3px] bg-gradient-to-r from-gold/55 to-transparent" />
               </div>
 
               <div className="space-y-10">
-                <p className="field-hint">Selecione o tipo de composição que você deseja receber:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    { id: 'A', icon: <DollarSign size={32} />, name: 'Código da Alma — Prosperidade', desc: 'O dinheiro nunca fica. Você trabalha muito, mas a abundância parece sempre escapar.' },
-                    { id: 'B', icon: <Heart size={32} />, name: 'Sinfonia das Almas — Amor', desc: 'Amor que não vem ou não fica. Relacionamentos que terminam, solidão que persiste.' },
-                    { id: 'C', icon: <Briefcase size={32} />, name: 'Primeira Melodia — Carreira', desc: 'Carreira estagnada. Você tem talento, mas não avança. Faltam oportunidades.' },
-                    { id: 'D', icon: <Frown size={32} />, name: 'Business Soundscape — Ansiedade', desc: 'Ansiedade e exaustão mental. A mente não para, o sono é raso.' },
-                    { id: 'E', icon: <Star size={32} />, name: 'Ciclo da Evolução — Propósito', desc: 'Sem propósito claro. Você sente que foi feito para mais, mas não sabe qual é o seu caminho.' },
-                    { id: 'F', icon: <Moon size={32} />, name: 'Renascimento — Sono', desc: 'Sono que não restaura. Acorda cansado, sem energia para o dia.' },
-                    { id: 'OUTRO', icon: <Sparkles size={32} />, name: 'Outro — Personalizado', desc: 'Descreva abaixo o que você busca e criaremos uma composição exclusiva para você.' },
-                  ].map((mod) => (
+                <p className="field-hint text-xl md:text-2xl font-bold text-gold">Escolha o tema principal da sua música personalizada:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {MODULOS_DATA.map((mod) => (
                     <div 
                       key={mod.id}
                       onClick={() => selectModule(mod.id)}
-                      className={`module-card ${formData.modulo === mod.id ? 'selected' : ''} ${errors.modulo && !formData.modulo ? 'border-red-500' : ''}`}
+                      className={`module-card compact ${formData.modulo === mod.id ? 'selected' : ''} ${errors.modulo && !formData.modulo ? 'border-red-500' : ''}`}
                     >
-                      <div className={`mb-4 transition-colors ${formData.modulo === mod.id ? 'text-gold' : 'text-ink-mid/40'}`}>
-                        {mod.icon}
+                      <div className={`mb-3 transition-colors ${formData.modulo === mod.id ? 'text-gold' : 'text-ink-mid/30'}`}>
+                        {React.cloneElement(mod.icon as React.ReactElement, { size: 24 })}
                       </div>
-                      <p className="text-2xl font-semibold text-ink mb-3">{mod.name}</p>
-                      <p className="text-lg text-ink-mid font-serif italic leading-relaxed">{mod.desc}</p>
+                      <div>
+                        <p className="text-xl font-bold text-ink mb-1">{mod.name}</p>
+                        <p className="text-base text-ink-mid font-serif italic border-l-2 border-gold/20 pl-3 leading-snug">{mod.desc}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
 
                 {errors.modulo && !formData.modulo && (
-                  <p className="text-red-500 text-sm mt-2">Por favor, selecione um módulo.</p>
+                  <p className="text-red-500 text-sm mt-2 font-bold">Por favor, selecione um tema.</p>
                 )}
 
-                {formData.modulo === 'OUTRO' && (
+                {formData.modulo === '21' && (
                   <motion.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -834,13 +882,13 @@ export default function App() {
                 </div>
               </div>
 
-              {formData.modulo === 'B' && (
+              {formData.modulo === '2' && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-8 p-8 bg-cream-dark border-2 border-gold/25 rounded-lg space-y-6"
                 >
-                  <p className="text-gold uppercase tracking-[0.3em] font-medium mb-4">Dados do(a) parceiro(a) — Módulo B</p>
+                  <p className="text-gold uppercase tracking-[0.3em] font-medium mb-4">Dados do(a) parceiro(a) — Conexão de Almas</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="field-label">Nome completo do(a) parceiro(a) *</label>

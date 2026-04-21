@@ -73,6 +73,10 @@
     @apply border-gold bg-gold-pale shadow-[0_12px_35px_rgba(201,168,76,0.25)];
   }
 
+  .module-card.compact {
+    @apply p-6 flex flex-col items-start gap-2 h-full justify-start;
+  }
+
   .check-item {
     @apply flex items-start gap-[18px] p-6 border-2 border-[rgba(201,168,76,0.55)] rounded-[8px] cursor-pointer bg-cream-dark transition-all duration-200;
   }
