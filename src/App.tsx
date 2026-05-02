@@ -565,7 +565,7 @@ export default function App() {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-cream border-2 border-gold rounded-xl max-width-[550px] w-full p-10 relative"
+              className="bg-cream border-2 border-gold rounded-xl max-w-[550px] w-full p-6 sm:p-10 relative"
             >
               <button onClick={() => setModal({ ...modal, active: false })} className="absolute top-4 right-4 text-ink-mid hover:text-gold transition-colors">
                 <X size={32} />
@@ -596,20 +596,20 @@ export default function App() {
       </AnimatePresence>
 
       {/* Header */}
-      <header className="bg-ink py-20 px-6 text-center relative overflow-hidden">
+      <header className="bg-ink py-12 sm:py-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, #C9A84C 40px, #C9A84C 41px)' }} />
         <div className="relative z-10">
-          <p className="text-gold uppercase tracking-[0.2em] sm:tracking-[0.5em] text-sm sm:text-base md:text-lg mb-4 opacity-90 font-medium px-2 translate-no" translate="no">Engenharia Sônica Quântica</p>
+          <p className="text-gold uppercase tracking-[0.2em] sm:tracking-[0.5em] text-[10px] sm:text-base md:text-lg mb-4 opacity-90 font-medium px-2 translate-no" translate="no">Engenharia Sônica Quântica</p>
           <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4">
-            <div className="h-[1px] sm:h-[2px] w-12 sm:w-20 bg-gold/40" />
-            <Sparkles className="text-gold" size={24} />
-            <div className="h-[1px] sm:h-[2px] w-12 sm:w-20 bg-gold/40" />
+            <div className="h-[1px] sm:h-[2px] w-8 sm:w-20 bg-gold/40" />
+            <Sparkles className="text-gold" size={18} />
+            <div className="h-[1px] sm:h-[2px] w-8 sm:w-20 bg-gold/40" />
           </div>
-          <h1 className="font-serif text-4xl sm:text-7xl md:text-9xl tracking-[0.05em] sm:tracking-[0.2em] text-cream mb-4 leading-none translate-no" translate="no">SINTONIZZE<span className="text-gold">·</span></h1>
-          <div className="gold-rule" />
-          <p className="text-gold/70 uppercase tracking-[0.15em] sm:tracking-[0.4em] text-sm sm:text-lg md:text-xl mt-6 font-light px-4 translate-no" translate="no">Ondas Transcendentais</p>
-          <p className="font-serif italic text-lg sm:text-2xl md:text-4xl text-cream/75 tracking-wide mt-5 leading-relaxed px-6">Formulário de Criação Vibracional Personalizada</p>
-          <div className="inline-block bg-gradient-to-br from-gold to-gold-light text-ink px-10 py-4 rounded-full text-lg tracking-[0.3em] uppercase font-bold mt-10 shadow-[0_8px_30px_rgba(201,168,76,0.5)]">
+          <h1 className="font-serif text-3xl sm:text-7xl md:text-9xl tracking-[0.05em] sm:tracking-[0.2em] text-cream mb-4 leading-none translate-no" translate="no">SINTONIZZE<span className="text-gold">·</span></h1>
+          <div className="gold-rule my-4 sm:my-8" />
+          <p className="text-gold/70 uppercase tracking-[0.15em] sm:tracking-[0.4em] text-[10px] sm:text-lg md:text-xl mt-6 font-light px-4 translate-no" translate="no">Ondas Transcendentais</p>
+          <p className="font-serif italic text-base sm:text-2xl md:text-4xl text-cream/75 tracking-wide mt-5 leading-relaxed px-4">Formulário de Criação Vibracional Personalizada</p>
+          <div className="inline-block bg-gradient-to-br from-gold to-gold-light text-ink px-6 sm:px-10 py-3 sm:py-4 rounded-full text-xs sm:text-lg tracking-[0.2em] sm:tracking-[0.3em] uppercase font-bold mt-8 sm:mt-10 shadow-[0_8px_30px_rgba(201,168,76,0.5)]">
             ✦ PDF Editável ✦
           </div>
         </div>
@@ -628,7 +628,7 @@ export default function App() {
         </button>
       </div>
 
-      <main className="max-w-[1100px] mx-auto py-20 px-6 pb-32">
+      <main className="max-w-[1100px] mx-auto py-12 sm:py-20 px-4 sm:px-6 pb-32">
         {/* Progress Bar */}
         <div className="sticky top-0 bg-cream/95 backdrop-blur-md py-8 z-[100] border-b border-gold/25 mb-16 shadow-sm">
           <div className="h-3 bg-cream-dark rounded-full overflow-hidden shadow-inner max-w-[900px] mx-auto">
@@ -655,34 +655,34 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center p-16 border-2 border-gold/55 bg-gold-pale rounded-lg max-w-[900px] mx-auto"
+            className="text-center p-6 sm:p-16 border-2 border-gold/55 bg-gold-pale rounded-lg max-w-[900px] mx-auto"
           >
             <div className="flex justify-center mb-10">
-              <div className="w-24 h-24 bg-gold rounded-full flex items-center justify-center shadow-lg">
-                <Check size={48} className="text-ink" />
+              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gold rounded-full flex items-center justify-center shadow-lg">
+                <Check size={32} className="sm:size-[48px] text-ink" />
               </div>
             </div>
-            <h3 className="font-serif text-5xl md:text-7xl text-ink mb-8 tracking-tight">Frequência Recebida ✦</h3>
+            <h3 className="font-serif text-3xl sm:text-7xl text-ink mb-8 tracking-tight">Frequência Recebida ✦</h3>
             <div className="gold-rule mb-10" />
             
             <div className="space-y-8 mb-12">
-              <p className="text-2xl text-ink-mid font-serif italic leading-relaxed">
+              <p className="text-xl sm:text-2xl text-ink-mid font-serif italic leading-relaxed">
                 Suas informações foram processadas e seu <span className="text-gold font-bold">PDF personalizado foi baixado</span>.
               </p>
-              <div className="p-8 bg-green-50 border-2 border-green-600/30 rounded-xl">
-                <p className="text-xl text-ink-mid mb-6 leading-relaxed">
+              <div className="p-4 sm:p-8 bg-green-50 border-2 border-green-600/30 rounded-xl">
+                <p className="text-lg sm:text-xl text-ink-mid mb-6 leading-relaxed">
                   Para concluir seu pedido, clique no botão abaixo para nos enviar os detalhes via <span className="font-bold text-green-700">WhatsApp</span> agora:
                 </p>
                 <a 
                   href={whatsappUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-4 bg-[#25D366] hover:bg-[#128C7E] text-white px-12 py-6 rounded-full text-2xl font-bold transition-all shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:-translate-y-1"
+                  className="inline-flex items-center justify-center gap-2 sm:gap-4 bg-[#25D366] hover:bg-[#128C7E] text-white px-6 sm:px-12 py-4 sm:py-6 rounded-full text-lg sm:text-2xl font-bold transition-all shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:-translate-y-1 w-full sm:w-auto"
                 >
-                  Confirmar e Enviar no WhatsApp
+                  <Music size={24} className="hidden sm:block" /> Enviar no WhatsApp
                 </a>
               </div>
-              <p className="text-lg text-ink-mid/60 italic">
+              <p className="text-base sm:text-lg text-ink-mid/60 italic">
                 Caso o download do PDF não tenha iniciado, utilize o botão abaixo.
               </p>
             </div>
@@ -718,8 +718,8 @@ export default function App() {
               </div>
 
               <div className="space-y-10">
-                <p className="field-hint text-xl md:text-2xl font-bold text-gold">Escolha o tema principal da sua música personalizada:</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p className="field-hint text-lg md:text-2xl font-bold text-gold">Escolha o tema principal da sua música personalizada:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {MODULOS_DATA.map((mod) => (
                     <div 
                       key={mod.id}
@@ -727,11 +727,11 @@ export default function App() {
                       className={`module-card compact ${formData.modulo === mod.id ? 'selected' : ''} ${errors.modulo && !formData.modulo ? 'border-red-500' : ''}`}
                     >
                       <div className={`mb-3 transition-colors ${formData.modulo === mod.id ? 'text-gold' : 'text-ink-mid/30'}`}>
-                        {React.cloneElement(mod.icon as React.ReactElement, { size: 24 })}
+                        {React.cloneElement(mod.icon as React.ReactElement, { size: 20 })}
                       </div>
                       <div>
-                        <p className="text-xl font-bold text-ink mb-1">{mod.name}</p>
-                        <p className="text-base text-ink-mid font-serif italic border-l-2 border-gold/20 pl-3 leading-snug">{mod.desc}</p>
+                        <p className="text-lg sm:text-xl font-bold text-ink mb-1 leading-tight">{mod.name}</p>
+                        <p className="text-sm sm:text-base text-ink-mid font-serif italic border-l-2 border-gold/20 pl-3 leading-snug">{mod.desc}</p>
                       </div>
                     </div>
                   ))}

@@ -90,7 +90,7 @@
   }
 
   .toolbar-btn {
-    @apply inline-flex items-center gap-[12px] bg-transparent text-cream border-2 border-gold px-8 py-[18px] font-sans font-medium text-[1rem] md:text-[1.1rem] tracking-[0.2em] uppercase cursor-pointer rounded-[4px] transition-all duration-200;
+    @apply inline-flex items-center gap-[8px] sm:gap-[12px] bg-transparent text-cream border-2 border-gold px-4 sm:px-8 py-3 sm:py-[18px] font-sans font-medium text-xs sm:text-[1.1rem] tracking-[0.1em] sm:tracking-[0.2em] uppercase cursor-pointer rounded-[4px] transition-all duration-200;
   }
 
   .toolbar-btn:hover {
