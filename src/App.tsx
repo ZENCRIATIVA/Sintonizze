@@ -113,6 +113,7 @@ export default function App() {
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState(0);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
   // Cálculo de progresso robusto com useEffect para garantir atualização em produção
   useEffect(() => {
@@ -438,12 +439,12 @@ export default function App() {
     if (!formData.nascimento) newErrors.nascimento = true;
     if (!formData.email.trim()) newErrors.email = true;
     
-    if (formData.modulo === 'B') {
+    if (formData.modulo === '2') {
       if (!formData.nome_parceiro.trim()) newErrors.nome_parceiro = true;
       if (!formData.nascimento_parceiro) newErrors.nascimento_parceiro = true;
     }
     
-    if (formData.modulo === 'OUTRO' && !formData.modulo_outro_desc.trim()) {
+    if (formData.modulo === '21' && !formData.modulo_outro_desc.trim()) {
       newErrors.modulo_outro_desc = true;
     }
 
@@ -462,92 +463,56 @@ export default function App() {
 
     setIsLoading(true);
     try {
-      const emailData: Record<string, any> = {
-        _subject: `NOVO FORMULÁRIO: ${formData.nome} - Sintonizze`,
-        _captcha: "false",
-        _template: 'table',
-        _honey: "", 
-        "Nome Completo": formData.nome,
-        "Data de Nascimento": formatDateBR(formData.nascimento),
-        "E-mail": formData.email,
-        "Telefone": formData.telefone,
-        "Módulo": formData.modulo,
-        "Título/Intenção": formData.intencao,
-        "História": formData.historia,
-        "Áreas": formData.intencao_areas.join(', '),
-        "Estilo Musical": formData.estilo_musical,
-        "Momento ideal": formData.momento_ouvir,
-        "Observações": formData.observacoes
-      };
-
-      if (formData.modulo === '2') {
-        emailData["Nome do Parceiro"] = formData.nome_parceiro;
-        emailData["Nascimento do Parceiro"] = formatDateBR(formData.nascimento_parceiro);
-      }
-
       // 1. Gerar PDF primeiro para garantir que o cliente tenha o arquivo
       await gerarPDF(true);
 
-      // 2. Tentar envio moderno (AJAX)
-      try {
-        const fb = new FormData();
-        Object.entries(emailData).forEach(([key, value]) => fb.append(key, value));
+      // 2. Preparar mensagem para o WhatsApp
+      const selectedModule = MODULOS_DATA.find(m => m.id === formData.modulo);
+      const moduloNome = selectedModule ? selectedModule.name : formData.modulo;
 
-        const response = await fetch("https://formsubmit.co/ajax/sintonizzey@gmail.com", {
-          method: "POST",
-          body: fb,
-        });
+      let message = `*NOVO FORMULÁRIO - SINTONIZZE*\n`;
+      message += `---------------------------\n`;
+      message += `*DADOS PESSOAIS*\n`;
+      message += `- Nome: ${formData.nome}\n`;
+      message += `- Nascimento: ${formatDateBR(formData.nascimento)}\n`;
+      message += `- E-mail: ${formData.email}\n`;
+      message += `- Telefone: ${formData.telefone}\n\n`;
 
-        if (!response.ok) throw new Error('Servidor recusou o envio');
-        
-        setIsSubmitted(true);
-        localStorage.removeItem('sintonizze_formulario');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (ajaxError) {
-        console.warn('AJAX falhou, tentando método de contingência...', ajaxError);
-        
-        // 3. Contingência: Se o AJAX falhar (AdBlock), usamos o método de formulário oculto
-        // Este método é mais difícil de ser bloqueado por extensões
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://formsubmit.co/sintonizzey@gmail.com';
-        form.style.display = 'none';
+      message += `*MÓDULO SELECIONADO*\n`;
+      message += `- ${moduloNome}${formData.modulo === '21' ? ': ' + formData.modulo_outro_desc : ''}\n\n`;
 
-        Object.entries(emailData).forEach(([key, value]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = String(value);
-          form.appendChild(input);
-        });
-
-        // Adicionamos um campo para redirecionar de volta após o envio
-        const nextInput = document.createElement('input');
-        nextInput.type = 'hidden';
-        nextInput.name = '_next';
-        nextInput.value = window.location.href;
-        form.appendChild(nextInput);
-
-        document.body.appendChild(form);
-        
-        // Avisamos o usuário que o AdBlock causou um redirecionamento
-        setModal({
-          active: true,
-          title: 'Sincronizando Frequência...',
-          text: 'Seu bloqueador de anúncios impediu o envio automático. Vamos tentar um método alternativo agora. O PDF já foi baixado!',
-          type: 'info'
-        });
-
-        setTimeout(() => {
-          form.submit();
-        }, 2000);
+      if (formData.modulo === '2') {
+        message += `*DADOS DO PARCEIRO*\n`;
+        message += `- Nome: ${formData.nome_parceiro}\n`;
+        message += `- Nascimento: ${formatDateBR(formData.nascimento_parceiro)}\n\n`;
       }
+
+      message += `*INTENÇÃO E DETALHES*\n`;
+      message += `*Título/Intenção:* ${formData.intencao}\n`;
+      message += `*História:* ${formData.historia}\n`;
+      message += `*Áreas:* ${formData.intencao_areas.join(', ')}\n\n`;
+
+      message += `*PREFERÊNCIAS MUSICAIS*\n`;
+      message += `*Estilo:* ${formData.estilo_musical}\n`;
+      message += `*Momento:* ${formData.momento_ouvir}\n`;
+      message += `*Observações:* ${formData.observacoes}\n`;
+
+      const whatsappNumber = "5511977280484";
+      const encodedMessage = encodeURIComponent(message);
+      const url = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      
+      setWhatsappUrl(url);
+
+      // Redirecionar para o WhatsApp
+      setIsSubmitted(true);
+      localStorage.removeItem('sintonizze_formulario');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
-      console.error('Erro crítico no envio:', error);
+      console.error('Erro no processamento:', error);
       setModal({ 
         active: true, 
         title: 'Atenção: Envio Manual', 
-        text: `Não conseguimos processar o envio automático. O PDF com suas respostas foi baixado! Por favor, envie-o para sintonizzey@gmail.com.`, 
+        text: `Ocorreu um erro ao processar. O PDF com suas respostas foi baixado! Por favor, envie-o para nosso WhatsApp: (11) 97728-0484.`, 
         type: 'info' 
       });
       setIsSubmitted(true); 
@@ -702,10 +667,23 @@ export default function App() {
             
             <div className="space-y-8 mb-12">
               <p className="text-2xl text-ink-mid font-serif italic leading-relaxed">
-                Sua intenção foi enviada com sucesso para nossa equipe em <span className="text-gold font-bold">sintonizzey@gmail.com</span>.
+                Suas informações foram processadas e seu <span className="text-gold font-bold">PDF personalizado foi baixado</span>.
               </p>
-              <p className="text-xl text-ink-mid leading-relaxed max-w-[700px] mx-auto">
-                O seu formulário em PDF foi baixado automaticamente. Caso o download não tenha iniciado, utilize o botão abaixo.
+              <div className="p-8 bg-green-50 border-2 border-green-600/30 rounded-xl">
+                <p className="text-xl text-ink-mid mb-6 leading-relaxed">
+                  Para concluir seu pedido, clique no botão abaixo para nos enviar os detalhes via <span className="font-bold text-green-700">WhatsApp</span> agora:
+                </p>
+                <a 
+                  href={whatsappUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-4 bg-[#25D366] hover:bg-[#128C7E] text-white px-12 py-6 rounded-full text-2xl font-bold transition-all shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:-translate-y-1"
+                >
+                  Confirmar e Enviar no WhatsApp
+                </a>
+              </div>
+              <p className="text-lg text-ink-mid/60 italic">
+                Caso o download do PDF não tenha iniciado, utilize o botão abaixo.
               </p>
             </div>
 
